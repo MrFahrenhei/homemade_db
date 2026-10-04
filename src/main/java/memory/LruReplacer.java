@@ -3,7 +3,7 @@ package memory;
 import java.util.LinkedHashSet;
 
 /**
- * This class will maintain the queue cronological order and seep to search without bottleneck
+ * This class will maintain the queue chronological order and seep to search without bottleneck
  *
  * <p>This class will sacrifice the last queue member if the memory starts to overflow</p>
  */
