@@ -1,7 +1,6 @@
 package storage;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 
 public class Tuple {
     public static final int TUPLE_SIZE = 64;
