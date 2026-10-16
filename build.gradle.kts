@@ -2,7 +2,7 @@ plugins {
     id("java")
 }
 
-group = "com.estudo"
+group = "com.beraldoDB"
 version = "1.0-SNAPSHOT"
 
 repositories {

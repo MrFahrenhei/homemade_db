@@ -1,1 +1,1 @@
-rootProject.name = "homemade-db"
+rootProject.name = "BeraldoDB"

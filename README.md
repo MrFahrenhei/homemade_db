@@ -58,6 +58,15 @@ The system does not lock the whole database. Synchronization happens at the page
 
 Clients connect over a TCP socket. Instead of text commands, they send a compact binary message with this layout:
 
+|Method   | Address  |
+|---|---|
+| INSERT  | 0x01   |
+| SELECT   | 0x02  |
+| DELETE  |  0x03  |
+| UPDATE   | 0x04   |
+| SELECT_ALL |  0x05  |
+
+
 ```
 [ 1 byte: OpCode ][ 8 bytes: Key ][ 50 bytes: Payload ]
 ```
