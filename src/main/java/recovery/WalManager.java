@@ -9,6 +9,10 @@ import java.nio.file.StandardOpenOption;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
+/**
+ * Grants the information's durability
+ */
+
 public class WalManager {
     private static final Logger logger = Logger.getLogger(WalManager.class.getName());
 
@@ -36,11 +40,12 @@ public class WalManager {
         long lsn = currentLsn.get();
 
         walBuffer.clear();
-        walBuffer.putLong(lsn);
-        walBuffer.put(opCode);
-        walBuffer.putInt(pageId);
-        walBuffer.putInt(payload.length);
+        walBuffer.putLong(lsn); // 8 bytes
+        walBuffer.put(opCode); // 1 byte
+        walBuffer.putInt(pageId); // 4 bytes
+        walBuffer.putInt(payload.length); // how many it need to recovery the text
         walBuffer.put(payload);
+        walBuffer.flip();
 
         try{
             while (walBuffer.hasRemaining()){
