@@ -16,7 +16,7 @@ public class Tuple {
         this.payload = new byte[PAYLOAD_SIZE];
 
         byte[] stringBytes = payloadStr.getBytes();
-        int lengthToCopy = Math.min(stringBytes.length, PAYLOAD_SIZE);
+        int lengthToCopy = Math.min(stringBytes.length, PAYLOAD_SIZE); // truncate if cross the limit
         System.arraycopy(stringBytes, 0, this.payload, 0, lengthToCopy);
     }
 
@@ -24,6 +24,9 @@ public class Tuple {
         this.payload = new byte[PAYLOAD_SIZE];
     }
 
+    /**
+     * This won't convert to json, unload the bytes in the buffer
+     */
     public void serialize(ByteBuffer buffer, int offset){
         buffer.position(offset);
         buffer.putLong(id);
@@ -40,7 +43,9 @@ public class Tuple {
     public long getId(){
         return id;
     }
+
     public String getPayloadAsString(){
-        return new String(payload).trim();
+        return new String(payload).trim(); // trim clean
     }
+
 }
