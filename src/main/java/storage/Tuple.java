@@ -1,6 +1,7 @@
 package storage;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 public class Tuple {
     public static final int TUPLE_SIZE = 64;
@@ -45,7 +46,7 @@ public class Tuple {
     }
 
     public String getPayloadAsString(){
-        return new String(payload).trim(); // trim clean
+        return new String(payload, StandardCharsets.UTF_8).trim(); // trim clean
     }
 
 }
