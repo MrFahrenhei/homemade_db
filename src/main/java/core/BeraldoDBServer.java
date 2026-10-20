@@ -12,12 +12,26 @@ import java.util.logging.Logger;
 public class BeraldoDBServer {
 
     private static final Logger logger = Logger.getLogger(BeraldoDBServer.class.getName());
+    private static final int DEFAULT_PORT = 5432;
 
     public static void main(String[] args) {
-        logger.info("Booting BeraldoDB_Engine...");
+        logger.info("Booting DBeraldo_Engine...");
 
-        DiskManager diskManager = new DiskManager("beraldodb.db");
-        WalManager walManager = new WalManager("beraldodb.log");
+        int port = DEFAULT_PORT;
+        if (args.length > 0) {
+            try {
+                port = Integer.parseInt(args[0]);
+                if (port < 1 || port > 65535) {
+                    throw new IllegalArgumentException("Port out of range: " + port);
+                }
+            } catch (NumberFormatException e) {
+                logger.severe("Invalid port argument. Using default port " + DEFAULT_PORT);
+                port = DEFAULT_PORT;
+            }
+        }
+
+        DiskManager diskManager = new DiskManager("dberaldo.db");
+        WalManager walManager = new WalManager("dberaldo.log");
 
         BufferPoolManager bufferPool = new BufferPoolManager(diskManager, 1024);
 

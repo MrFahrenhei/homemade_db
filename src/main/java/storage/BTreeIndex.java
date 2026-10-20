@@ -54,11 +54,15 @@ public class BTreeIndex {
             for (int i = 0; i < currentRecords; i++){
                 int readOffset = PAGE_HEADER_SIZE + (i * Tuple.TUPLE_SIZE);
                 tempTuple.deserialize(targetPage.getData(), readOffset);
-                if(tempTuple.getId() == targetId){
-                    targetPage.getData().position(readOffset);
-                    targetPage.getData().putLong(-1L);
 
-                    logger.info("Tombstone placed for ID: "+targetId+" at offset: "+readOffset);
+                if (tempTuple.getId() == targetId) {
+                    targetPage.getData().position(readOffset);
+                    for (int b = 0; b < Tuple.TUPLE_SIZE; b++) {
+                        targetPage.getData().put((byte) 0x00);
+                    }
+
+                    logger.info("Tombstone placed for ID: " + targetId + " at offset: " + readOffset);
+                    return true;
                 }
             }
             logger.info("Delete failed: ID" + targetId + " not found.");

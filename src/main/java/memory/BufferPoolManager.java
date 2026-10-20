@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.LinkedTransferQueue;
 import java.util.logging.Logger;
 
 public class BufferPoolManager {
@@ -30,7 +29,10 @@ public class BufferPoolManager {
         }
     }
 
-    public Page fetchPage(int pageId){
+    public synchronized Page fetchPage(int pageId){
+        if (pageId < 0) {
+            throw new IllegalArgumentException("Invalid page id: " + pageId);
+        }
         if(pageTables.containsKey(pageId)){
             int frameId = pageTables.get(pageId);
             replacer.pin(frameId);
@@ -52,13 +54,14 @@ public class BufferPoolManager {
 
         targetPage.setPageId(pageId);
         diskManager.readPage(pageId, targetPage);
+
         pageTables.put(pageId, frameId);
         replacer.pin(frameId);
 
         return targetPage;
     }
 
-    public void unpinPage(int pageId, boolean isDirt){
+    public synchronized void unpinPage(int pageId, boolean isDirt){
         if(!pageTables.containsKey(pageId)) return;
 
         int frameId = pageTables.get(pageId);
@@ -67,16 +70,18 @@ public class BufferPoolManager {
         replacer.unpin(frameId);
     }
 
-    private int getAvailableFrame(){
+    private synchronized int getAvailableFrame(){
         if(!freeFrames.isEmpty()) return freeFrames.poll();
+
         Integer evictedFrame = replacer.evict();
+
         if(evictedFrame == null){
             throw new RuntimeException("System halt: Buffer pool capacity exhausted. No unpinned frames available.");
         }
         return evictedFrame;
     }
 
-    public void flushAllPages(){
+    public synchronized void flushAllPages(){
         logger.info("Flushing all dirt pages to disk checkpoint...");
         for(Page page: pool){
             if(page.getPageId() != -1 && page.isDirt()){
