@@ -16,7 +16,7 @@ public class Tuple {
         this.timestamp = timestamp;
         this.payload = new byte[PAYLOAD_SIZE];
 
-        byte[] stringBytes = payloadStr.getBytes();
+        byte[] stringBytes = payloadStr.getBytes(StandardCharsets.UTF_8);
         int lengthToCopy = Math.min(stringBytes.length, PAYLOAD_SIZE); // truncate if cross the limit
         System.arraycopy(stringBytes, 0, this.payload, 0, lengthToCopy);
     }
