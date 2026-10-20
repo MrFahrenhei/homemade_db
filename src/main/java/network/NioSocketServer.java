@@ -8,15 +8,20 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 public class NioSocketServer {
     private static final Logger logger = Logger.getLogger(NioSocketServer.class.getName());
 
+    private static final int MAX_CONNECTIONS = 256;
+    private static final int READ_BUFFER_SIZE = 1024;
+
     private final int port;
     private final ProtocolParser parser;
     private Selector selector;
     private final ByteBuffer networkBuffer;
+    private final AtomicInteger activeConnection = new AtomicInteger();
 
     public NioSocketServer(int port, ProtocolParser parser) {
         this.port = port;
@@ -32,7 +37,7 @@ public class NioSocketServer {
             serverSocket.configureBlocking(false);
             serverSocket.register(selector, SelectionKey.OP_ACCEPT);
 
-            logger.info("NullDB Engine started. Listening on TCP port: " + port);
+            logger.info("Beraldo Engine started. Listening on TCP port: " + port);
 
             while (true) {
                 selector.select();
